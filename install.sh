@@ -1,8 +1,10 @@
 #!/usr/bin/env bash
-# Install personal dotfiles + the software they configure.
+# Install personal dotfiles — configs only, no software.
 #
-# Software: installed via Homebrew (Brewfile) — iTerm2, Ghostty, cmux, node, jq, git.
-# Claude Code CLI: installed via npm (`@anthropic-ai/claude-code`).
+# This installer only wires up configuration; it does NOT install any software.
+# If the apps are missing, install them yourself:
+#   brew bundle --file=Brewfile          # iTerm2, Ghostty, cmux, node, jq, git
+#   npm i -g @anthropic-ai/claude-code   # Claude Code CLI
 #
 # Config: file-based configs (claude, cmux, ghostty) are installed as symlinks
 # pointing back into the repo, so editing the live file *is* editing the repo.
@@ -54,29 +56,7 @@ link() {
     ok "linked $dst -> $src"
 }
 
-# --- Homebrew + Brewfile ---------------------------------------------------
-
-if ! command -v brew >/dev/null 2>&1; then
-    log "Homebrew not found — installing"
-    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-    # Add brew to PATH for the rest of this script (Apple Silicon default).
-    if [[ -x /opt/homebrew/bin/brew ]]; then
-        eval "$(/opt/homebrew/bin/brew shellenv)"
-    elif [[ -x /usr/local/bin/brew ]]; then
-        eval "$(/usr/local/bin/brew shellenv)"
-    fi
-fi
-
-log "Installing software via Brewfile"
-brew bundle --file="$REPO_DIR/Brewfile"
-ok "brew bundle done"
-
-# --- Claude Code CLI -------------------------------------------------------
-
-if ! command -v claude >/dev/null 2>&1; then
-    log "Installing Claude Code CLI via npm"
-    npm install -g @anthropic-ai/claude-code
-fi
+# --- Claude settings -------------------------------------------------------
 
 log "Linking Claude settings into ~/.claude/"
 link "$REPO_DIR/claude/settings.json" "$HOME/.claude/settings.json"
@@ -173,10 +153,10 @@ fi
 
 cat <<EOF
 
-Done.
-
-Software (iTerm2, Ghostty, cmux, node, etc.) installed via Brewfile.
-Claude Code CLI installed via npm.
+Done. Configs only — no software was installed.
+Install apps yourself if missing:
+  brew bundle --file="$REPO_DIR/Brewfile"
+  npm i -g @anthropic-ai/claude-code
 
 Claude / cmux / Ghostty configs are now symlinks into $REPO_DIR —
 edit them in either place and the change is the same. Commit + push when ready.

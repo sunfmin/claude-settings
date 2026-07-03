@@ -1,23 +1,29 @@
 # dotfiles
 
-Personal macOS setup — Claude Code, iTerm2, cmux, Ghostty — including the
-software and the configs, synced across machines.
+Personal macOS setup — Claude Code, iTerm2, cmux, Ghostty — configs synced
+across machines. The installer wires up configs only; it does **not** install
+software.
 
 ## What it does
 
-The installer (`install.sh`) sets up a fresh Mac in one shot:
+The installer (`install.sh`) wires up configs — it does **not** install any
+software:
 
-1. **Installs Homebrew** if missing.
-2. **`brew bundle`** from the included `Brewfile` — iTerm2, Ghostty, cmux,
-   node, jq, git.
-3. **Installs Claude Code CLI** (`npm i -g @anthropic-ai/claude-code`).
-4. **Symlinks file-based configs** from this repo into their live locations
+1. **Symlinks file-based configs** from this repo into their live locations
    (see the table below). Editing the live file *is* editing the repo file.
-5. **Merges iTerm settings** into the iTerm plist — the iTerm profile and
+2. **Merges iTerm settings** into the iTerm plist — the iTerm profile and
    app-level prefs can't be symlinks because the plist holds other state
    too, so the installer rewrites just the **Default** profile (matched by
    its stable Guid `DC718448-DCA9-4DE4-9CDC-989D58A849A4`) plus a curated
    set of app-level keys.
+
+The software these configs are for is **not** installed automatically —
+install it yourself:
+
+```bash
+brew bundle --file=Brewfile          # iTerm2, Ghostty, cmux, node, jq, git
+npm i -g @anthropic-ai/claude-code   # Claude Code CLI
+```
 
 | Path in repo | Installed as | Mechanism |
 | --- | --- | --- |
@@ -27,7 +33,7 @@ The installer (`install.sh`) sets up a fresh Mac in one shot:
 | `ghostty/config` | `~/.config/ghostty/config` | symlink |
 | `iterm/Default.json` | Default profile inside `~/Library/Preferences/com.googlecode.iterm2.plist` | plist merge by Guid |
 | `iterm/app-prefs.json` | top-level keys in the same plist | plist merge |
-| `Brewfile` | (just read by `brew bundle`) | — |
+| `Brewfile` | (not installed; run `brew bundle` manually) | — |
 
 ## Install (new machine)
 
@@ -45,9 +51,8 @@ git clone https://github.com/sunfmin/dotfiles.git ~/dotfiles
 cd ~/dotfiles && ./install.sh
 ```
 
-> Re-running is safe. `brew bundle` skips already-installed software,
-> `ln -sfn` overwrites old symlinks, and the iTerm plist merge only touches
-> the keys we manage.
+> Re-running is safe. `ln -sfn` overwrites old symlinks, and the iTerm plist
+> merge only touches the keys we manage.
 >
 > Already-open iTerm windows keep their old settings until relaunch.
 
