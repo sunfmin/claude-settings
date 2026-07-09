@@ -44,6 +44,20 @@ Change my skill:
 `source` not under `sunfmin/` (mattpocock/skills, anthropics/skills,
 mvanhorn/cli-printing-press) = third-party, not mine. No edit+push. Surface instead.
 
+## dreamina credits
+
+Every `dreamina` generation call (text2image, image2image, text2video, image2video,
+frames2video, multiframe2video, multimodal2video, image_upscale ...) -> after it
+returns, report credit spend as a per-step line:
+
+```
+第N步 <cmd>: 消耗 <credit_count> credits, 余额 <total_credit>
+```
+
+`credit_count` -> from the task result JSON. Balance -> `dreamina user_credit`
+(`total_credit`). Multiple calls in a turn -> one line each, plus a total-consumed
+summary at the end.
+
 ## rg, not grep
 
 Search files -> built-in Grep tool (rg under the hood). Filter output -> pipe to `rg`.
