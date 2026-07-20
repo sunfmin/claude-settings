@@ -58,8 +58,31 @@ returns, report credit spend as a per-step line:
 (`total_credit`). Multiple calls in a turn -> one line each, plus a total-consumed
 summary at the end.
 
+## dreamina video queue (vip = 快队列)
+
+Dreamina video gen has TWO queues, gated by model tier:
+
+- `_vip` models (`seedance2.0_vip`, `seedance2.0fast_vip`) -> **快队列 / priority**:
+  reach `queue_status: Generating` in ~1-2 min, finish in a few min.
+- non-vip models (`seedance2.0`, `seedance2.0fast`, `seedance2.0mini`) -> **慢队列 / free**:
+  can sit at `queue_status: Queueing` for 30-40+ min, sometimes effectively stuck.
+
+Rule: any video that must land promptly -> ALWAYS use a `_vip` model. Non-vip only for
+"don't care when it finishes". `_vip` also costs more and is the only tier reaching 1080p/4K.
+There is NO CLI cancel -> a slow-queue task, once submitted, can't be aborted (only ignored).
+
 ## rg, not grep
 
 Search files -> built-in Grep tool (rg under the hood). Filter output -> pipe to `rg`.
 Never shell out to `grep`/`egrep`/`fgrep` -> a global PreToolUse hook denies them.
 `pgrep`, `zgrep`, `git grep` still ok.
+
+## auto commit
+
+阶段性任务完成 -> 自动 `git commit`，不用等我开口。这条覆盖默认的「只有我要求才 commit」。
+
+- Git repo only. 非 repo -> skip.
+- 每个有意义的阶段 = 一个 commit：一个 feature、一个 fix、一段测试跑通、一步 refactor。别把整个 session 攒成一个大 commit。
+- **只 commit，不 push。** Push 仍要我明确说。
+- Message 简洁，描述这一步做了啥；保留 `Co-Authored-By` trailer。
+- 分支照 harness 默认走（在默认分支上先开 branch 再 commit）。
