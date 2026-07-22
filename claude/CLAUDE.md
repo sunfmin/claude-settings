@@ -77,6 +77,16 @@ Search files -> built-in Grep tool (rg under the hood). Filter output -> pipe to
 Never shell out to `grep`/`egrep`/`fgrep` -> a global PreToolUse hook denies them.
 `pgrep`, `zgrep`, `git grep` still ok.
 
+## 大文件下载
+
+下大文件（模型权重、数据集、release、tarball/zip、ISO、镜像、视频……）前，**先搜确认本地有没有**：
+
+- 查 `~/.cache/huggingface`、`~/.cache/modelscope`、aria2/下载目标目录、已有产物、venv/工具自带缓存等。
+- 已有 -> 直接用，**别重复下**。
+- 确实缺、真需要下 -> **先和我确认**，得到同意再下。别擅自 `hf download` / `wget` / `curl -O` / aria2 / 工具首次运行触发的隐式拉取就把几个 G 拉下来。
+
+不确定「会不会触发下载」也先说一声，别默默开下。
+
 ## auto commit
 
 阶段性任务完成 -> 自动 `git commit`，不用等我开口。这条覆盖默认的「只有我要求才 commit」。
